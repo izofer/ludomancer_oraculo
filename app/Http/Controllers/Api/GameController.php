@@ -17,7 +17,7 @@ class GameController extends Controller
     {
         $user = $request->user();
         
-        // 1. Buscamos el juego (Asegúrese que en Python envíe el SLUG, no el ID)
+        // 1. Buscamos el juego
         $juego = Game::where('slug', $slug)->firstOrFail();
         $hwid = $request->header('X-HWID');
 
@@ -37,7 +37,7 @@ class GameController extends Controller
             ], 403);
         }
 
-        // 2. Registro en la Bitácora (Solo si todo lo anterior es correcto)
+        // 2. Registro en la Bitácora (El radar de descargas)
         DownloadLog::create([
             'user_id'            => $user->id,
             'game_id'            => $juego->id,
@@ -46,17 +46,25 @@ class GameController extends Controller
             'version_descargada' => $juego->version_actual,
         ]);
 
-        $rutaArchivo = storage_path("app/" . $juego->url_descarga); 
+        // --- 3. EL CORTE QUIRÚRGICO (Corrección de la Bóveda) ---
+        
+        // Limpiamos cualquier espacio o salto de línea invisible que venga de la base de datos
+        $urlLimpia = trim($juego->url_descarga);
 
-        if (!Storage::disk('local')->exists($rutaArchivo)) {
+        // Limpiamos la caché de archivos de PHP (evita falsos negativos)
+        clearstatcache();
+
+        // Dado que Storage::disk('local') ya apunta a 'storage/app/', 
+        // pasamos la ruta relativa limpia (ej. 'games/HellRiders/HellRiders_v2_0_0.zip')
+        if (!Storage::disk('local')->exists($urlLimpia)) {
             return response()->json([
                 'error' => 'Archivo no encontrado',
                 'message' => 'El tesoro solicitado no se encuentra en el storage.',
-                'debug_buscando_en' => $rutaArchivo
+                'debug_buscando_relativo' => $urlLimpia
             ], 404);
         }
 
-        // 4. Descarga segura
-        return Storage::download($rutaArchivo, "{$juego->slug}.zip");
+        // 4. Descarga segura y forzada
+        return Storage::disk('local')->download($urlLimpia, "{$juego->slug}.zip");
     }
 }
