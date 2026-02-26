@@ -21,28 +21,29 @@ RUN a2enmod rewrite
 # 4. Inyectar nuestra configuración de Apache
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# 5. Traer a Composer (El gestor de paquetes) desde su imagen oficial
+# --- 5. EXPANSIÓN DE LA BÓVEDA (Coordenadas Oficiales) ---
+RUN echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/uploads.ini
+
+# 6. Traer a Composer (El gestor de paquetes) desde su imagen oficial
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 6. Definir el santuario de trabajo
+# 7. Definir el santuario de trabajo
 WORKDIR /var/www/html
 
-# 7. Copiar TODO el código fuente al contenedor
+# 8. Copiar TODO el código fuente al contenedor
 COPY . .
 
-# 8. Instalar las dependencias de PHP (Silencioso y optimizado para producción)
+# 9. Instalar las dependencias de PHP (Silencioso y optimizado para producción)
 RUN composer install --optimize-autoloader --no-dev
 
-# 9. Otorgar los permisos de escritura sagrados a Laravel
+# 10. Otorgar los permisos de escritura sagrados a Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 10. Exponer el puerto 80 para que EasyPanel lo conecte a Internet
-EXPOSE 80
-
-# --- EXPANSIÓN DE LA BÓVEDA ---
-RUN echo "upload_max_filesize = 100M" > /ruta/correcta/php/conf.d/uploads.ini \
-    && echo "post_max_size = 100M" >> /ruta/correcta/php/conf.d/uploads.ini \
-    && echo "memory_limit = 256M" >> /ruta/correcta/php/conf.d/uploads.ini
-
-# Creamos el puente entre la bóveda oscura (storage/app/public) y la vitrina web (public/storage)
+# --- 11. EL PUENTE INMORTAL ---
+# Creamos el puente entre la bóveda oscura y la vitrina web después de tener el código y los permisos
 RUN php artisan storage:link
+
+# 12. Exponer el puerto 80 para que EasyPanel lo conecte a Internet
+EXPOSE 80
