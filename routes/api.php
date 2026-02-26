@@ -31,7 +31,7 @@ Route::post('/web/register', [AuthController::class, 'registerWeb']);
 /*ADMINISTRACION TEMPORAL DEL HUB SETUP*/
 Route::get('/hub/version', function () {
     return response()->json([
-        'version_requerida' => '2.0.0', 
+        'version_requerida' => '1.0.0', 
     ]);
 });
 Route::get('/hub/descargar', function () {
