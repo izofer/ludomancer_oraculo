@@ -18,6 +18,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/hub/descargar', function () {
+    // 1. Apuntamos el radar a la ruta absoluta dentro del servidor
+    $rutaArchivo = storage_path('app/launcher/LudomancerHub_setup.exe');
+
+    // 2. Verificación de seguridad: Evitamos que el servidor colapse si el archivo no existe
+    if (!file_exists($rutaArchivo)) {
+        abort(404, 'El instalador del Hub no está disponible en la base de operaciones.');
+    }
+
+    // 3. Forzamos la descarga. Laravel inyecta los headers HTTP correctos para un .exe
+    return response()->download($rutaArchivo, 'LudomancerHub_setup.exe');
+});
+
 
 /*RUTA SECRETA PARA CARGAR EL HUB*/
 Route::middleware(['ip.admin'])->prefix('admin')->group(function () {
