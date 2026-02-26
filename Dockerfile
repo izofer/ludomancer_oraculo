@@ -38,3 +38,11 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # 10. Exponer el puerto 80 para que EasyPanel lo conecte a Internet
 EXPOSE 80
+
+# --- EXPANSIÓN DE LA BÓVEDA ---
+RUN echo "upload_max_filesize = 100M" > /ruta/correcta/php/conf.d/uploads.ini \
+    && echo "post_max_size = 100M" >> /ruta/correcta/php/conf.d/uploads.ini \
+    && echo "memory_limit = 256M" >> /ruta/correcta/php/conf.d/uploads.ini
+
+# Creamos el puente entre la bóveda oscura (storage/app/public) y la vitrina web (public/storage)
+RUN php artisan storage:link
