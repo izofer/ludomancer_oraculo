@@ -94,7 +94,7 @@ Route::post('/webhook/mercadopago', [TransactionController::class, 'mercadopagoW
 
 
 /*RUTA SECRETA PARA CARGAR EL HUB*/
-Route::middleware(['auth:sanctum', 'ip.admin'])->prefix('admin')->group(function () {
+Route::middleware(['ip.admin'])->prefix('admin')->group(function () {
 
     // 1. Mostrar el mini-front (La interfaz visual)
     Route::get('/admin/cargar-hub', function () {
