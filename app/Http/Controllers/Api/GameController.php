@@ -46,7 +46,7 @@ class GameController extends Controller
             'version_descargada' => $juego->version_actual,
         ]);
 
-        $rutaArchivo = "games/" . $juego->url_descarga; 
+        $rutaArchivo = storage_path("app/" . $juego->url_descarga); 
 
         if (!Storage::disk('local')->exists($rutaArchivo)) {
             return response()->json([
