@@ -22,12 +22,12 @@ Route::get('/', function () {
 Route::middleware(['ip.admin'])->prefix('admin')->group(function () {
 
     // 1. Mostrar el mini-front (La interfaz visual)
-    Route::get('/admin/cargar-hub', function () {
+    Route::get('/cargar-hub', function () {
         return view('admin.cargar-hub'); // Crearemos esta vista en el siguiente paso
     })->name('admin.cargar-hub.vista');
 
     // 2. Procesar la munición (El archivo .exe)
-    Route::post('/admin/cargar-hub', function (Request $request) {
+    Route::post('/cargar-hub', function (Request $request) {
         // Validación estricta: Solo aceptamos un archivo presente y no masivo (ej. max 100MB)
         $request->validate([
             'instalador' => 'required|file|max:102400', 
