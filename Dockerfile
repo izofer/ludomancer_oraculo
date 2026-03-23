@@ -22,9 +22,9 @@ RUN a2enmod rewrite
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # --- 5. EXPANSIÓN DE LA BÓVEDA (Coordenadas Oficiales) ---
-RUN echo "upload_max_filesize = 300M" > /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size = 300M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "memory_limit = 300M" >> /usr/local/etc/php/conf.d/uploads.ini
+RUN echo "upload_max_filesize = 500M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 500M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "memory_limit = 500M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # 6. Traer a Composer (El gestor de paquetes) desde su imagen oficial
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
